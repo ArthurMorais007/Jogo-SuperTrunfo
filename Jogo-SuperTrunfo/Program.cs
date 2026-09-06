@@ -26,43 +26,38 @@ namespace JogoSuperTrunfo
             Vida = vida;
             EhSuperTrunfo = ehSuperTrunfo;
         }
-        
-            public void ExibirCarta()
-        {
 
+        public void ExibirCarta()
+        {
             ConsoleColor corOriginal = Console.ForegroundColor;
 
-            
-            Console.ForegroundColor = EhSuperTrunfo ? ConsoleColor.Yellow : ConsoleColor.Black;
+            ConsoleColor corMoldura = EhSuperTrunfo ? ConsoleColor.Yellow : ConsoleColor.Cyan;
+            Console.ForegroundColor = corMoldura;
 
-            Console.WriteLine("┌──────────────────────────────────┐");
-            Console.WriteLine($"│ CARTA [{Codigo,-3}] - {Nome.ToUpper(),-18} │");
-            Console.WriteLine($"│ Classe: {ClasseRPG,-24} │");
+            Console.WriteLine("┌────────────────────────────────────┐");
+            Console.WriteLine($"│ CARTA [{Codigo,-3}] - {Nome.ToUpper(),-20} │");
+            Console.WriteLine($"│ Classe: {ClasseRPG,-26} │");
 
             if (EhSuperTrunfo)
             {
-                Console.ForegroundColor = ConsoleColor.Yellow;
-                Console.WriteLine("│ ★★★  S U P E R   T R U N F O  ★★★│");
+                Console.WriteLine("│ ???  S U P E R   T R U N F O  ???  │");
             }
 
-            Console.ForegroundColor = EhSuperTrunfo ? ConsoleColor.Yellow : ConsoleColor.Black;
-            Console.WriteLine("├──────────────────────────────────┤");
+            Console.WriteLine("├────────────────────────────────────┤");
 
-            Console.ForegroundColor = ConsoleColor.White;
-            Console.WriteLine($"│  1. ⚔️  Força     : {Forca,-12} │");
-            Console.WriteLine($"│  2. ⚡ Agilidade : {Agilidade,-12} │");
-            Console.WriteLine($"│  3. ✨ Magia     : {Magia,-12} │");
-            Console.WriteLine($"│  4. ❤️  Vida (HP) : {Vida,-12} │");
+            Console.ForegroundColor = ConsoleColor.Magenta;
+            Console.WriteLine($"│ 1. ?? Força     : {Forca,-16} │");
+            Console.WriteLine($"│ 2. ?  Agilidade : {Agilidade,-16} │");
+            Console.WriteLine($"│ 3. ?  Magia     : {Magia,-16} │");
+            Console.WriteLine($"│ 4. ?? Vida (HP) : {Vida,-16} │");
 
-            Console.ForegroundColor = EhSuperTrunfo ? ConsoleColor.Yellow : ConsoleColor.Black;
-            Console.WriteLine("└──────────────────────────────────┘\n");
+            Console.ForegroundColor = corMoldura;
+            Console.WriteLine("└────────────────────────────────────┘\n");
 
             Console.ForegroundColor = corOriginal;
         }
     }
-    }
-
-
+}
 namespace JogoSuperTrunfo
 {
     internal class Program
