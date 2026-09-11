@@ -39,18 +39,26 @@ namespace JogoSuperTrunfo
         {
             ConsoleColor corTema = EhSuperTrunfo ? ConsoleColor.Yellow : ConsoleColor.Cyan;
 
-  
+     
             Console.ForegroundColor = corTema;
             Console.WriteLine("┌──────────────────────────────────────────┐");
             Console.WriteLine($"│ {ClasseRPG.ToUpper(),-26} {Codigo,13} │");
-
             Console.WriteLine("├──────────────────────────────────────────┤");
+
+        
+            Console.ForegroundColor = corTema;
+            Console.Write("│ ");
+
             Console.BackgroundColor = ConsoleColor.DarkCyan;
             Console.ForegroundColor = ConsoleColor.Black;
-            Console.WriteLine($"│ NOME: {Nome.ToUpper(),-34} │");
-            Console.ResetColor();
+            string textoNome = $"NOME: {Nome.ToUpper()}";
+            Console.Write(textoNome.PadRight(40));
 
+            Console.ResetColor();
             Console.ForegroundColor = corTema;
+            Console.WriteLine(" │");
+
+      
             Console.WriteLine("├──────────────────────────────────────────┤");
             Console.ForegroundColor = ConsoleColor.White;
 
@@ -61,11 +69,17 @@ namespace JogoSuperTrunfo
             Console.WriteLine($"│ INTELIGÊNCIA: {Inteligencia,26} │");
             Console.WriteLine($"│ NOBLE PHANTASM: {NoblePhantasm,24} │");
 
+      
             Console.ForegroundColor = corTema;
             Console.WriteLine("├──────────────────────────────────────────┤");
             Console.ForegroundColor = ConsoleColor.Gray;
 
             string fraseFormatada = $"\"[{Frase}]\"";
+            if (fraseFormatada.Length > 38)
+            {
+                fraseFormatada = fraseFormatada.Substring(0, 33) + "...]\"";
+            }
+
             Console.WriteLine($"│ {fraseFormatada,-40} │");
 
             Console.ForegroundColor = corTema;
@@ -73,7 +87,7 @@ namespace JogoSuperTrunfo
             Console.ResetColor();
         }
     }
-}
+
 
 namespace JogoSuperTrunfo
     {
@@ -95,3 +109,4 @@ namespace JogoSuperTrunfo
             }
         }
     }
+}
