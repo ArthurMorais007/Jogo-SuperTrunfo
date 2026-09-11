@@ -1,74 +1,97 @@
-﻿using System;
+﻿using JogoSuperTrunfo;
+using System;
 using System.Collections.Generic;
-using System.Collections.Generic;
+using System.Text;
 namespace JogoSuperTrunfo
 {
     public class Personagem
     {
-        public string Codigo { get; set; }
         public string Nome { get; set; }
         public string ClasseRPG { get; set; }
+        public string Codigo { get; set; }
         public bool EhSuperTrunfo { get; set; }
 
         public int Forca { get; set; }
-        public int Agilidade { get; set; }
-        public int Magia { get; set; }
-        public int Vida { get; set; }
+        public int Velocidade { get; set; }
+        public int Resistencia { get; set; }
+        public int Mana { get; set; }
+        public int Inteligencia { get; set; }
+        public int NoblePhantasm { get; set; }
 
-        public Personagem(string codigo, string nome, string classeRpg, int forca, int agilidade, int magia, int vida, bool ehSuperTrunfo = false)
+        public string Frase { get; set; }
+
+        public Personagem(string nome, string classeRpg, string codigo, int forca, int velocidade, int resistencia, int mana, int inteligencia, int noblePhantasm, string frase, bool ehSuperTrunfo = false)
         {
-            Codigo = codigo;
             Nome = nome;
             ClasseRPG = classeRpg;
+            Codigo = codigo;
             Forca = forca;
-            Agilidade = agilidade;
-            Magia = magia;
-            Vida = vida;
+            Velocidade = velocidade;
+            Resistencia = resistencia;
+            Mana = mana;
+            Inteligencia = inteligencia;
+            NoblePhantasm = noblePhantasm;
+            Frase = frase;
             EhSuperTrunfo = ehSuperTrunfo;
         }
 
         public void ExibirCarta()
         {
-            ConsoleColor corOriginal = Console.ForegroundColor;
+            ConsoleColor corTema = EhSuperTrunfo ? ConsoleColor.Yellow : ConsoleColor.Cyan;
 
-            ConsoleColor corMoldura = EhSuperTrunfo ? ConsoleColor.Yellow : ConsoleColor.Cyan;
-            Console.ForegroundColor = corMoldura;
+  
+            Console.ForegroundColor = corTema;
+            Console.WriteLine("┌──────────────────────────────────────────┐");
+            Console.WriteLine($"│ {ClasseRPG.ToUpper(),-26} {Codigo,13} │");
 
-            Console.WriteLine("┌────────────────────────────────────┐");
-            Console.WriteLine($"│ CARTA [{Codigo,-3}] - {Nome.ToUpper(),-20} │");
-            Console.WriteLine($"│ Classe: {ClasseRPG,-26} │");
+            Console.WriteLine("├──────────────────────────────────────────┤");
+            Console.BackgroundColor = ConsoleColor.DarkCyan;
+            Console.ForegroundColor = ConsoleColor.Black;
+            Console.WriteLine($"│ NOME: {Nome.ToUpper(),-34} │");
+            Console.ResetColor();
 
-            if (EhSuperTrunfo)
-            {
-                Console.WriteLine("│ ???  S U P E R   T R U N F O  ???  │");
-            }
+            Console.ForegroundColor = corTema;
+            Console.WriteLine("├──────────────────────────────────────────┤");
+            Console.ForegroundColor = ConsoleColor.White;
 
-            Console.WriteLine("├────────────────────────────────────┤");
+            Console.WriteLine($"│ FORÇA: {Forca,33} │");
+            Console.WriteLine($"│ VELOCIDADE: {Velocidade,28} │");
+            Console.WriteLine($"│ RESISTÊNCIA: {Resistencia,27} │");
+            Console.WriteLine($"│ MANA: {Mana,34} │");
+            Console.WriteLine($"│ INTELIGÊNCIA: {Inteligencia,26} │");
+            Console.WriteLine($"│ NOBLE PHANTASM: {NoblePhantasm,24} │");
 
-            Console.ForegroundColor = ConsoleColor.Magenta;
-            Console.WriteLine($"│ 1. ?? Força     : {Forca,-16} │");
-            Console.WriteLine($"│ 2. ?  Agilidade : {Agilidade,-16} │");
-            Console.WriteLine($"│ 3. ?  Magia     : {Magia,-16} │");
-            Console.WriteLine($"│ 4. ?? Vida (HP) : {Vida,-16} │");
+            Console.ForegroundColor = corTema;
+            Console.WriteLine("├──────────────────────────────────────────┤");
+            Console.ForegroundColor = ConsoleColor.Gray;
 
-            Console.ForegroundColor = corMoldura;
-            Console.WriteLine("└────────────────────────────────────┘\n");
+            string fraseFormatada = $"\"[{Frase}]\"";
+            Console.WriteLine($"│ {fraseFormatada,-40} │");
 
-            Console.ForegroundColor = corOriginal;
+            Console.ForegroundColor = corTema;
+            Console.WriteLine("└──────────────────────────────────────────┘");
+            Console.ResetColor();
         }
     }
 }
+
 namespace JogoSuperTrunfo
-{
-    internal class Program
     {
-        static void Main(string[] args)
+        internal class Program
         {
-            List<Personagem> cartas = Baralho.CriarBaralho();
+            static void Main(string[] args)
+            {
+                Console.OutputEncoding = Encoding.UTF8;
 
-            cartas[0].ExibirCarta();
-            cartas[1].ExibirCarta();
-            Console.ReadKey();
+                List<Personagem> cartas = Baralho.CriarBaralho();
+
+                foreach (var carta in cartas)
+                {
+                    carta.ExibirCarta();
+                    Console.WriteLine();
+                }
+
+                Console.ReadKey();
+            }
         }
     }
-}
