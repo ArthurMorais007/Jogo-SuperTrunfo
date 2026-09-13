@@ -68,20 +68,10 @@ namespace Jogo_SuperTrunfo
                 Console.Write("Opção: ");
 
                 string opcao = Console.ReadLine();
-                string atributoEscolhido = opcao switch
-                {
-                    "1" => "forca",
-                    "2" => "velocidade",
-                    "3" => "resistencia",
-                    "4" => "mana",
-                    "5" => "inteligencia",
-                    "6" => "noblephantasm",
-                    _ => "forca"
-                };
 
                 Console.Clear();
 
-                partida.IniciarPartida(atributoEscolhido);
+                partida.IniciarPartida();
 
                 indiceJogadorDaVez = (indiceJogadorDaVez + 1) % jogadores.Count;
 
