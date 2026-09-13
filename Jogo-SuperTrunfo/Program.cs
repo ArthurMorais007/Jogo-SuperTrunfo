@@ -1,110 +1,125 @@
-﻿using JogoSuperTrunfo;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
-namespace JogoSuperTrunfo
+
+namespace Jogo_SuperTrunfo
 {
-    public class Personagem
+    internal class Program
     {
-        public string Nome { get; set; }
-        public string ClasseRPG { get; set; }
-        public string Codigo { get; set; }
-        public bool EhSuperTrunfo { get; set; }
-
-        public int Forca { get; set; }
-        public int Velocidade { get; set; }
-        public int Resistencia { get; set; }
-        public int Mana { get; set; }
-        public int Inteligencia { get; set; }
-        public int NoblePhantasm { get; set; }
-
-        public string Frase { get; set; }
-
-        public Personagem(string nome, string classeRpg, string codigo, int forca, int velocidade, int resistencia, int mana, int inteligencia, int noblePhantasm, string frase, bool ehSuperTrunfo = false)
+        static void Main(string[] args)
         {
-            Nome = nome;
-            ClasseRPG = classeRpg;
-            Codigo = codigo;
-            Forca = forca;
-            Velocidade = velocidade;
-            Resistencia = resistencia;
-            Mana = mana;
-            Inteligencia = inteligencia;
-            NoblePhantasm = noblePhantasm;
-            Frase = frase;
-            EhSuperTrunfo = ehSuperTrunfo;
-        }
+            Console.OutputEncoding = Encoding.UTF8;
 
-        public void ExibirCarta()
-        {
-            ConsoleColor corTema = EhSuperTrunfo ? ConsoleColor.Yellow : ConsoleColor.Cyan;
+            List<Carta> baralho = Baralho.CriarCartas();
 
-     
-            Console.ForegroundColor = corTema;
-            Console.WriteLine("┌──────────────────────────────────────────┐");
-            Console.WriteLine($"│ {ClasseRPG.ToUpper(),-26} {Codigo,13} │");
-            Console.WriteLine("├──────────────────────────────────────────┤");
+            List<Jogador> jogadores = new List<Jogador>();
 
-        
-            Console.ForegroundColor = corTema;
-            Console.Write("│ ");
+            Console.WriteLine("==========================================");
+            Console.WriteLine("    BEM-VINDO AO SUPER TRUNFO FATE!       ");
+            Console.WriteLine("==========================================\n");
 
-            Console.BackgroundColor = ConsoleColor.DarkCyan;
-            Console.ForegroundColor = ConsoleColor.Black;
-            string textoNome = $"NOME: {Nome.ToUpper()}";
-            Console.Write(textoNome.PadRight(40));
-
-            Console.ResetColor();
-            Console.ForegroundColor = corTema;
-            Console.WriteLine(" │");
-
-      
-            Console.WriteLine("├──────────────────────────────────────────┤");
-            Console.ForegroundColor = ConsoleColor.White;
-
-            Console.WriteLine($"│ FORÇA: {Forca,33} │");
-            Console.WriteLine($"│ VELOCIDADE: {Velocidade,28} │");
-            Console.WriteLine($"│ RESISTÊNCIA: {Resistencia,27} │");
-            Console.WriteLine($"│ MANA: {Mana,34} │");
-            Console.WriteLine($"│ INTELIGÊNCIA: {Inteligencia,26} │");
-            Console.WriteLine($"│ NOBLE PHANTASM: {NoblePhantasm,24} │");
-
-      
-            Console.ForegroundColor = corTema;
-            Console.WriteLine("├──────────────────────────────────────────┤");
-            Console.ForegroundColor = ConsoleColor.Gray;
-
-            string fraseFormatada = $"\"[{Frase}]\"";
-            if (fraseFormatada.Length > 38)
+            Console.WriteLine("=== CADASTRO DOS 5 MESTRES ===");
+            for (int i = 1; i <= 5; i++)
             {
-                fraseFormatada = fraseFormatada.Substring(0, 33) + "...]\"";
-            }
+                Console.Write($"Informe o nome do Mestre {i}: ");
+                string nome = Console.ReadLine();
 
-            Console.WriteLine($"│ {fraseFormatada,-40} │");
-
-            Console.ForegroundColor = corTema;
-            Console.WriteLine("└──────────────────────────────────────────┘");
-            Console.ResetColor();
-        }
-    }
-
-
-namespace JogoSuperTrunfo
-    {
-        internal class Program
-        {
-            static void Main(string[] args)
-            {
-                Console.OutputEncoding = Encoding.UTF8;
-
-                List<Personagem> cartas = Baralho.CriarBaralho();
-
-                foreach (var carta in cartas)
+                if (string.IsNullOrWhiteSpace(nome))
                 {
-                    carta.ExibirCarta();
-                    Console.WriteLine();
+                    nome = $"Mestre {i}";
                 }
 
+                jogadores.Add(new Jogador(nome));
+            }
+
+            Partida partida = new Partida(jogadores, baralho);
+            partida.DistribuirCartas();
+
+            Console.WriteLine("\nTodas as cartas do Espírito Heroico foram distribuídas entre os Mestres!");
+            Console.WriteLine("Pressione qualquer tecla para iniciar a Guerra do Graal...");
+            Console.ReadKey();
+            Console.Clear();
+
+            int indiceJogadorDaVez = 0;
+
+            while (jogadores.Count(j => j.Mao.Count > 0) > 1)
+            {
+                while (jogadores[indiceJogadorDaVez].Mao.Count == 0)
+                {
+                    indiceJogadorDaVez = (indiceJogadorDaVez + 1) % jogadores.Count;
+                }
+
+                Jogador jogadorDaVez = jogadores[indiceJogadorDaVez];
+
+                Console.WriteLine($"=== TURNO DO MESTRE: {jogadorDaVez.Nome.ToUpper()} ===");
+                Console.WriteLine($"Cartas na mão: {jogadorDaVez.Mao.Count}\n");
+
+                Carta cartaAtual = jogadorDaVez.Mao.Peek();
+                cartaAtual.ExibirCarta();
+
+                Console.WriteLine($"\nMestre {jogadorDaVez.Nome}, escolha o atributo para o combate:");
+                Console.WriteLine("1 - Força");
+                Console.WriteLine("2 - Velocidade");
+                Console.WriteLine("3 - Resistência");
+                Console.WriteLine("4 - Mana");
+                Console.WriteLine("5 - Inteligência");
+                Console.WriteLine("6 - Noble Phantasm");
+                Console.Write("Opção: ");
+
+                string opcao = Console.ReadLine();
+                string atributoEscolhido = opcao switch
+                {
+                    "1" => "forca",
+                    "2" => "velocidade",
+                    "3" => "resistencia",
+                    "4" => "mana",
+                    "5" => "inteligencia",
+                    "6" => "noblephantasm",
+                    _ => "forca"
+                };
+
+                Console.Clear();
+
+                partida.IniciarPartida(atributoEscolhido);
+
+                indiceJogadorDaVez = (indiceJogadorDaVez + 1) % jogadores.Count;
+
+                Console.WriteLine("\nPressione qualquer tecla para a próxima rodada...");
+                Console.ReadKey();
+                Console.Clear();
+            }
+
+            Jogador campeao = null;
+            foreach (var j in jogadores)
+            {
+                if (j.Mao.Count > 0)
+                {
+                    campeao = j;
+                    break;
+                }
+            }
+
+            if (campeao != null)
+            {
+                Console.ForegroundColor = ConsoleColor.Green;
+                Console.WriteLine("\n==================================================================");
+                Console.WriteLine($"  PARABÉNS! O MESTRE {campeao.Nome.ToUpper()} VENCEU A GUERRA DO SANTO GRAAL!  ");
+                Console.WriteLine("==================================================================");
+                Console.ResetColor();
+
+                Console.WriteLine($"\nO Santo Graal se manifesta diante de você, Mestre {campeao.Nome}...");
+                Console.Write("Qual é o seu desejo ao Santo Graal? ");
+                string desejo = Console.ReadLine();
+
+                Console.Clear();
+                Console.ForegroundColor = ConsoleColor.Yellow;
+                Console.WriteLine("==================================================================");
+                Console.WriteLine($"  O SANTO GRAAL CONCEDEU O SEU DESEJO: ");
+                Console.WriteLine($"  \"{desejo}\"");
+                Console.WriteLine("==================================================================");
+                Console.ResetColor();
+                Console.WriteLine("\nObrigado por jogar a Guerra do Santo Graal! Pressione qualquer tecla para sair...");
                 Console.ReadKey();
             }
         }

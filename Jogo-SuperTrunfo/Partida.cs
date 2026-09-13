@@ -1,14 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
-namespace JogoSuperTrunfo
+namespace Jogo_SuperTrunfo
 {
     public class Jogador
     {
         public string Nome { get; set; }
-        public Queue<Personagem> Mao { get; set; } = new Queue<Personagem>();
+        public Queue<Carta> Mao { get; set; } = new Queue<Carta>();
 
         public Jogador(string nome)
         {
@@ -19,9 +18,9 @@ namespace JogoSuperTrunfo
     public class Partida
     {
         public List<Jogador> Jogadores { get; set; }
-        public List<Personagem> Baralho { get; set; }
+        public List<Carta> Baralho { get; set; }
 
-        public Partida(List<Jogador> jogadores, List<Personagem> baralho)
+        public Partida(List<Jogador> jogadores, List<Carta> baralho)
         {
             Jogadores = jogadores;
             Baralho = baralho;
@@ -39,22 +38,22 @@ namespace JogoSuperTrunfo
                 indexJogador = (indexJogador + 1) % Jogadores.Count;
             }
 
-            Console.WriteLine("Cartas distribuídas entre os jogadores.");
+            Console.WriteLine("Cartas distribuídas entre os Mestres.");
         }
 
         public void IniciarPartida(string atributoEscolhido)
         {
             Console.WriteLine($"\n--- O COMBATE IRÁ COMEÇAR! ATRIBUTO: {atributoEscolhido.ToUpper()} ---");
 
-            List<Personagem> cartasNaMesa = new List<Personagem>();
+            List<Carta> cartasNaMesa = new List<Carta>();
             Jogador vencedor = null;
-            Personagem cartaVencedora = null;
+            Carta cartaVencedora = null;
             int maiorValor = -1;
             bool superTrunfoNaMesa = false;
 
             foreach (var jogador in Jogadores.Where(j => j.Mao.Count > 0))
             {
-                Personagem cartaJogada = jogador.Mao.Dequeue();
+                Carta cartaJogada = jogador.Mao.Dequeue();
                 cartasNaMesa.Add(cartaJogada);
 
                 Console.WriteLine($"{jogador.Nome} jogou: {cartaJogada.Nome}");
@@ -88,7 +87,7 @@ namespace JogoSuperTrunfo
             }
         }
 
-        private int PegarValorAtributo(Personagem carta, string atributo)
+        private int PegarValorAtributo(Carta carta, string atributo)
         {
             return atributo.ToLower() switch
             {
