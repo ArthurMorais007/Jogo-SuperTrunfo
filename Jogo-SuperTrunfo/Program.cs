@@ -12,11 +12,10 @@ namespace Jogo_SuperTrunfo
             Console.OutputEncoding = Encoding.UTF8;
 
             List<Carta> baralho = Baralho.CriarCartas();
-
             List<Jogador> jogadores = new List<Jogador>();
 
             Console.WriteLine("==========================================");
-            Console.WriteLine("    BEM-VINDO AO SUPER TRUNFO FATE!       ");
+            Console.WriteLine("    BEM-VINDO AO FATE: NOBLE TRUNFO!       ");
             Console.WriteLine("==========================================\n");
 
             Console.WriteLine("=== CADASTRO DOS 5 MESTRES ===");
@@ -42,9 +41,13 @@ namespace Jogo_SuperTrunfo
             Console.Clear();
 
             int indiceJogadorDaVez = 0;
+            int rodadas = 0;
+            const int MAX_RODADAS = 150;
 
-            while (jogadores.Count(j => j.Mao.Count > 0) > 1)
+            while (jogadores.Count(j => j.Mao.Count > 0) > 1 && rodadas < MAX_RODADAS)
             {
+                rodadas++;
+
                 while (jogadores[indiceJogadorDaVez].Mao.Count == 0)
                 {
                     indiceJogadorDaVez = (indiceJogadorDaVez + 1) % jogadores.Count;
@@ -52,36 +55,39 @@ namespace Jogo_SuperTrunfo
 
                 Jogador jogadorDaVez = jogadores[indiceJogadorDaVez];
 
-                Console.WriteLine($"=== TURNO DO MESTRE: {jogadorDaVez.Nome.ToUpper()} ===");
-                Console.WriteLine($"Cartas na mão: {jogadorDaVez.Mao.Count}\n");
+                int escolhaAtributo = -1;
 
-                Carta cartaAtual = jogadorDaVez.Mao.Peek();
-                cartaAtual.ExibirCarta();
-
-                Console.WriteLine($"\nMestre {jogadorDaVez.Nome}, escolha o atributo para o combate:");
-                Console.WriteLine("1 - Força");
-                Console.WriteLine("2 - Velocidade");
-                Console.WriteLine("3 - Resistência");
-                Console.WriteLine("4 - Mana");
-                Console.WriteLine("5 - Inteligência");
-                Console.WriteLine("6 - Noble Phantasm");
-                Console.Write("Opção: ");
-
-                string opcao = Console.ReadLine();
-                string atributoEscolhido = opcao switch
+                while (escolhaAtributo < 1 || escolhaAtributo > 6)
                 {
-                    "1" => "forca",
-                    "2" => "velocidade",
-                    "3" => "resistencia",
-                    "4" => "mana",
-                    "5" => "inteligencia",
-                    "6" => "noblephantasm",
-                    _ => "forca"
-                };
+                    Console.Clear();
+                    Console.WriteLine($"=== RODADA {rodadas}/{MAX_RODADAS} ===");
+                    Console.WriteLine($"=== TURNO DO MESTRE: {jogadorDaVez.Nome.ToUpper()} ===");
+                    Console.WriteLine($"Cartas na mão: {jogadorDaVez.Mao.Count}\n");
+
+                    Carta cartaAtual = jogadorDaVez.Mao.Peek();
+                    cartaAtual.ExibirCarta();
+
+                    Console.WriteLine($"\nMestre {jogadorDaVez.Nome}, escolha o atributo para o combate:");
+                    Console.WriteLine("1 - Força");
+                    Console.WriteLine("2 - Velocidade");
+                    Console.WriteLine("3 - Resistência");
+                    Console.WriteLine("4 - Mana");
+                    Console.WriteLine("5 - Inteligência");
+                    Console.WriteLine("6 - Noble Phantasm");
+                    Console.Write("Opção: ");
+
+                    string entrada = Console.ReadLine();
+
+                    if (!int.TryParse(entrada, out escolhaAtributo) || escolhaAtributo < 1 || escolhaAtributo > 6)
+                    {
+                        Console.WriteLine("\nVocê Selecionou uma opção inválida, por favor escolha uma das opções (1 a 6).");
+                        Console.WriteLine("Pressione qualquer tecla para tentar novamente...");
+                        Console.ReadKey();
+                    }
+                }
 
                 Console.Clear();
-
-                partida.IniciarPartida(atributoEscolhido);
+                partida.ExecutarTurnoCombate(jogadorDaVez, escolhaAtributo);
 
                 indiceJogadorDaVez = (indiceJogadorDaVez + 1) % jogadores.Count;
 
@@ -91,13 +97,26 @@ namespace Jogo_SuperTrunfo
             }
 
             Jogador campeao = null;
-            foreach (var j in jogadores)
+
+            if (rodadas >= MAX_RODADAS)
             {
-                if (j.Mao.Count > 0)
+                Console.ForegroundColor = ConsoleColor.Yellow;
+                Console.WriteLine("\n==================================================================================");
+                Console.WriteLine($"  ATENÇÃO: A GUERRA PROLONGOU-SE DEMAIS! LIMITE DE {MAX_RODADAS} RODADAS ATINGIDO.  ");
+                Console.WriteLine("==================================================================================");
+                Console.ResetColor();
+
+                campeao = jogadores.OrderByDescending(j => j.Mao.Count).First();
+
+                Console.WriteLine("\nPlacar final dos Mestres que sobreviveram:");
+                foreach (var j in jogadores.Where(j => j.Mao.Count > 0))
                 {
-                    campeao = j;
-                    break;
+                    Console.WriteLine($"- Mestre {j.Nome}: {j.Mao.Count} cartas.");
                 }
+            }
+            else
+            {
+                campeao = jogadores.FirstOrDefault(j => j.Mao.Count > 0);
             }
 
             if (campeao != null)

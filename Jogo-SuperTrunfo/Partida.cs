@@ -19,6 +19,7 @@ namespace Jogo_SuperTrunfo
     {
         public List<Jogador> Jogadores { get; set; }
         public List<Carta> Baralho { get; set; }
+        private List<Carta> monteAcumulado = new List<Carta>(); 
 
         public Partida(List<Jogador> jogadores, List<Carta> baralho)
         {
@@ -41,50 +42,107 @@ namespace Jogo_SuperTrunfo
             Console.WriteLine("Cartas distribuídas entre os Mestres.");
         }
 
-        public void IniciarPartida(string atributoEscolhido)
+        public void ExecutarTurnoCombate(Jogador jogadorDaVez, int escolhaAtributo)
         {
-            Console.WriteLine($"\n--- O COMBATE IRÁ COMEÇAR! ATRIBUTO: {atributoEscolhido.ToUpper()} ---");
+            (string atributoEscolhido, string nomeAtributoFormatado) = ObterAtributoPorNumero(escolhaAtributo);
+
+            Console.WriteLine($"--- O COMBATE IRÁ COMEÇAR! ATRIBUTO ESCOLHIDO: {nomeAtributoFormatado.ToUpper()} ---");
+            if (monteAcumulado.Count > 0)
+            {
+                Console.WriteLine($"[MONTE ACUMULADO NA MESA: {monteAcumulado.Count} carta(s) de empates anteriores!]\n");
+            }
 
             List<Carta> cartasNaMesa = new List<Carta>();
-            Jogador vencedor = null;
-            Carta cartaVencedora = null;
-            int maiorValor = -1;
+
+  
+            foreach (var cartaMonte in monteAcumulado)
+            {
+                cartasNaMesa.Add(cartaMonte);
+            }
+            monteAcumulado.Clear();
+
+            Dictionary<Jogador, int> valoresJogadores = new Dictionary<Jogador, int>();
+            Dictionary<Jogador, Carta> cartasJogadores = new Dictionary<Jogador, Carta>();
             bool superTrunfoNaMesa = false;
+            Jogador jogadorSuperTrunfo = null;
 
             foreach (var jogador in Jogadores.Where(j => j.Mao.Count > 0))
             {
                 Carta cartaJogada = jogador.Mao.Dequeue();
                 cartasNaMesa.Add(cartaJogada);
+                cartasJogadores[jogador] = cartaJogada;
 
-                Console.WriteLine($"{jogador.Nome} jogou: {cartaJogada.Nome}");
+                int valorAtributoCarta = PegarValorAtributo(cartaJogada, atributoEscolhido);
+                valoresJogadores[jogador] = valorAtributoCarta;
+
+                Console.WriteLine($"{jogador.Nome} jogou: {cartaJogada.Nome} | {nomeAtributoFormatado}: {valorAtributoCarta}");
 
                 if (cartaJogada.EhSuperTrunfo)
                 {
                     superTrunfoNaMesa = true;
-                    vencedor = jogador;
-                    cartaVencedora = cartaJogada;
-                }
-                else if (!superTrunfoNaMesa)
-                {
-                    int valorAtributo = PegarValorAtributo(cartaJogada, atributoEscolhido);
-
-                    if (valorAtributo > maiorValor)
-                    {
-                        maiorValor = valorAtributo;
-                        vencedor = jogador;
-                        cartaVencedora = cartaJogada;
-                    }
+                    jogadorSuperTrunfo = jogador;
                 }
             }
 
-            if (vencedor != null)
+            if (superTrunfoNaMesa)
             {
-                Console.WriteLine($"\n>> VENCEDOR DA RODADA: {vencedor.Nome} com {cartaVencedora.Nome}! <<");
+                Console.WriteLine($"\n>> SUPER TRUNFO NA MESA! O Mestre {jogadorSuperTrunfo.Nome} venceu a rodada com {cartasJogadores[jogadorSuperTrunfo].Nome}! <<");
+                foreach (var carta in cartasNaMesa)
+                {
+                    jogadorSuperTrunfo.Mao.Enqueue(carta);
+                }
+                return;
+            }
+
+            int maiorValor = valoresJogadores.Values.Max();
+
+
+            var candidatosVencedores = valoresJogadores.Where(v => v.Value == maiorValor).Select(v => v.Key).ToList();
+
+            if (candidatosVencedores.Count == 1)
+            {
+                Jogador vencedor = candidatosVencedores[0];
+                Carta cartaVencedora = cartasJogadores[vencedor];
+
+                Console.WriteLine($"\n>> VENCEDOR DA RODADA: {vencedor.Nome} com {cartaVencedora.Nome} (Valor: {maiorValor})! <<");
+                if (cartasNaMesa.Count > cartasJogadores.Count)
+                {
+                    Console.WriteLine($"(Levou também o monte acumulado de empates anteriores!)");
+                }
+
                 foreach (var carta in cartasNaMesa)
                 {
                     vencedor.Mao.Enqueue(carta);
                 }
             }
+            else
+            {
+            
+                Console.ForegroundColor = ConsoleColor.Yellow;
+                Console.WriteLine("\n>> EMPATE NO MAIOR VALOR! Ninguém leva as cartas nesta rodada. <<");
+                Console.WriteLine("As cartas da mesa foram guardadas para a próxima rodada!");
+                Console.ResetColor();
+
+            
+                foreach (var carta in cartasNaMesa)
+                {
+                    monteAcumulado.Add(carta);
+                }
+            }
+        }
+
+        private (string, string) ObterAtributoPorNumero(int escolha)
+        {
+            return escolha switch
+            {
+                1 => ("forca", "Força"),
+                2 => ("velocidade", "Velocidade"),
+                3 => ("resistencia", "Resistência"),
+                4 => ("mana", "Mana"),
+                5 => ("inteligencia", "Inteligência"),
+                6 => ("noblephantasm", "Noble Phantasm"),
+                _ => ("forca", "Força")
+            };
         }
 
         private int PegarValorAtributo(Carta carta, string atributo)
