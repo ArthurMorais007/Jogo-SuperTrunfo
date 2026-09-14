@@ -76,18 +76,11 @@ namespace Jogo_SuperTrunfo
                     Console.WriteLine("6 - Noble Phantasm");
                     Console.Write("Opção: ");
 
-                    string entrada = Console.ReadLine();
-
-                    if (!int.TryParse(entrada, out escolhaAtributo) || escolhaAtributo < 1 || escolhaAtributo > 6)
-                    {
-                        Console.WriteLine("\nVocê Selecionou uma opção inválida, por favor escolha uma das opções (1 a 6).");
-                        Console.WriteLine("Pressione qualquer tecla para tentar novamente...");
-                        Console.ReadKey();
-                    }
-                }
+                string opcao = Console.ReadLine();
 
                 Console.Clear();
-                partida.ExecutarTurnoCombate(jogadorDaVez, escolhaAtributo);
+
+                partida.IniciarPartida();
 
                 indiceJogadorDaVez = (indiceJogadorDaVez + 1) % jogadores.Count;
 
