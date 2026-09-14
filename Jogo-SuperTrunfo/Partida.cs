@@ -42,69 +42,9 @@ namespace Jogo_SuperTrunfo
             Console.WriteLine("Cartas distribuídas entre os Mestres.");
         }
 
-        public void IniciarPartida()
+        public void ExecutarTurnoCombate(Jogador jogadorDaVez, int escolhaAtributo)
         {
-            string atributoEscolhido = "";
-            bool opcaoValida = false;
-
-            while (!opcaoValida)
-            {
-                Console.WriteLine("\n[X] Valor indisponível, escolha uma das opções válidas (1 a 6).");
-                Console.WriteLine("\n--- ESCOLHA O ATRIBUTO PARA O COMBATE ---");
-                Console.WriteLine("1 – Força");
-                Console.WriteLine("2 – Velocidade");
-                Console.WriteLine("3 – Resistência");
-                Console.WriteLine("4 – Mana");
-                Console.WriteLine("5 – Inteligência");
-                Console.WriteLine("6 – Noble Phantasm");
-
-                Console.Write("Opção: ");
-                string entrada = Console.ReadLine();
-
-                if (int.TryParse(entrada, out int escolha))
-                {
-                    if (escolha == 1)
-                    {
-                        atributoEscolhido = "forca";
-                        opcaoValida = true;
-                    }
-                    else if (escolha == 2)
-                    {
-                        atributoEscolhido = "velocidade";
-                        opcaoValida = true;
-                    }
-                    else if (escolha == 3)
-                    {
-                        atributoEscolhido = "resistencia";
-                        opcaoValida = true;
-                    }
-                    else if (escolha == 4)
-                    {
-                        atributoEscolhido = "mana";
-                        opcaoValida = true;
-                    }
-                    else if (escolha == 5)
-                    {
-                        atributoEscolhido = "inteligencia";
-                        opcaoValida = true;
-                    }
-                    else if (escolha == 6)
-                    {
-                        atributoEscolhido = "noblephantasm";
-                        opcaoValida = true;
-                    }
-                    else
-                    {
-                        Console.WriteLine("\n[X] Valor indisponível, escolha uma das opções válidas (1 a 6).");
-                    }
-                }
-                else
-                {
-                    Console.WriteLine("\n[X] Valor indisponível, escolha uma das opções válidas (1 a 6).");
-                }
-            }
-
-            Console.WriteLine($"\n--- O COMBATE IRÁ COMEÇAR! ATRIBUTO: {atributoEscolhido.ToUpper()} ---");
+            (string atributoEscolhido, string nomeAtributoFormatado) = ObterAtributoPorNumero(escolhaAtributo);
 
             Console.WriteLine($"--- O COMBATE IRÁ COMEÇAR! ATRIBUTO ESCOLHIDO: {nomeAtributoFormatado.ToUpper()} ---");
             if (monteAcumulado.Count > 0)
@@ -114,7 +54,6 @@ namespace Jogo_SuperTrunfo
 
             List<Carta> cartasNaMesa = new List<Carta>();
 
-  
             foreach (var cartaMonte in monteAcumulado)
             {
                 cartasNaMesa.Add(cartaMonte);
@@ -156,7 +95,6 @@ namespace Jogo_SuperTrunfo
 
             int maiorValor = valoresJogadores.Values.Max();
 
-
             var candidatosVencedores = valoresJogadores.Where(v => v.Value == maiorValor).Select(v => v.Key).ToList();
 
             if (candidatosVencedores.Count == 1)
@@ -177,13 +115,11 @@ namespace Jogo_SuperTrunfo
             }
             else
             {
-            
                 Console.ForegroundColor = ConsoleColor.Yellow;
                 Console.WriteLine("\n>> EMPATE NO MAIOR VALOR! Ninguém leva as cartas nesta rodada. <<");
                 Console.WriteLine("As cartas da mesa foram guardadas para a próxima rodada!");
                 Console.ResetColor();
 
-            
                 foreach (var carta in cartasNaMesa)
                 {
                     monteAcumulado.Add(carta);

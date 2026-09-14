@@ -15,7 +15,7 @@ namespace Jogo_SuperTrunfo
             List<Jogador> jogadores = new List<Jogador>();
 
             Console.WriteLine("==========================================");
-            Console.WriteLine("    BEM-VINDO AO FATE: NOBLE TRUNFO!       ");
+            Console.WriteLine("    BEM-VINDO AO SUPER TRUNFO FATE!       ");
             Console.WriteLine("==========================================\n");
 
             Console.WriteLine("=== CADASTRO DOS 5 MESTRES ===");
@@ -76,11 +76,18 @@ namespace Jogo_SuperTrunfo
                     Console.WriteLine("6 - Noble Phantasm");
                     Console.Write("Opção: ");
 
-                string opcao = Console.ReadLine();
+                    string entrada = Console.ReadLine();
+
+                    if (!int.TryParse(entrada, out escolhaAtributo) || escolhaAtributo < 1 || escolhaAtributo > 6)
+                    {
+                        Console.WriteLine("\nVocê Selecionou uma opção inválida, por favor escolha uma das opções (1 a 6).");
+                        Console.WriteLine("Pressione qualquer tecla para tentar novamente...");
+                        Console.ReadKey();
+                    }
+                }
 
                 Console.Clear();
-
-                partida.IniciarPartida();
+                partida.ExecutarTurnoCombate(jogadorDaVez, escolhaAtributo);
 
                 indiceJogadorDaVez = (indiceJogadorDaVez + 1) % jogadores.Count;
 
