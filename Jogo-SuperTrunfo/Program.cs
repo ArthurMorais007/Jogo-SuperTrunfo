@@ -15,7 +15,7 @@ namespace Jogo_SuperTrunfo
             List<Jogador> jogadores = new List<Jogador>();
 
             Console.WriteLine("==========================================");
-            Console.WriteLine("    BEM-VINDO AO SUPER TRUNFO FATE!       ");
+            Console.WriteLine("    BEM-VINDO AO FATE: NOBLE TRUNFO!       ");
             Console.WriteLine("==========================================\n");
 
             Console.WriteLine("=== CADASTRO DOS 5 MESTRES ===");

@@ -3,4 +3,5 @@
     <File Path=".gitignore" />
   </Folder>
   <Project Path="Jogo-SuperTrunfo/Jogo-SuperTrunfo.csproj" />
+  <Project Path="JogoSuperTrunfo.Testes/JogoSuperTrunfo.Testes.csproj" Id="36222413-e7c3-451a-be3f-0cc45fb3e924" />
 </Solution>
