@@ -63,8 +63,6 @@ Entre as classes presentes no jogo estão:
 * 🗡️ **Lancer**
 * 🥷 **Assassin**
 * 💪 **Berserker**
-* 👑 **Ruler**
-* 🛡️ **Shielder**
 * 👤 **Master**
 * 🏆 **Artifact**
 
